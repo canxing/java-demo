@@ -1,0 +1,4 @@
+server:
+  port: 8081 # 指定 web 服务监听的端口
+  servlet:
+    context-path: /test # 指定 web 服务根路径

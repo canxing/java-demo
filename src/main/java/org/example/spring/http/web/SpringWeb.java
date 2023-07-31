@@ -15,8 +15,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
         }
 )
 public class SpringWeb {
-    public static void main(String[] args) {
-        // 设置启动类，传入启动参数
-        SpringApplication.run(SpringWeb.class, args);
-    }
+//    public static void main(String[] args) {
+//        // 设置启动类，传入启动参数
+//        SpringApplication.run(SpringWeb.class, args);
+//    }
 }

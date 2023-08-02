@@ -1,10 +1,12 @@
 package org.example.spring.rabbitmq;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import com.sun.jna.platform.win32.OaIdl;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerEndpoint;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.boot.SpringApplication;
@@ -13,10 +15,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
+import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
-public class MessagingRabbitmqApplication {
+public class MessagingRabbitmqApplication implements RabbitListenerConfigurer {
 
     /**
      * ??
@@ -53,19 +56,43 @@ public class MessagingRabbitmqApplication {
     }
 
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter listenerAdapter) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(queueName);
-        container.setMessageListener(listenerAdapter);
-        return container;
+    public Queue queueTwo() {
+        return new Queue("test", false);
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange("test-exchange");
     }
+
+    @Bean
+    public Binding fanoutBinding(Queue queueTwo, FanoutExchange exchange) {
+        return BindingBuilder.bind(queueTwo).to(exchange);
+    }
+
+//    @Bean
+//    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+//                                             MessageListenerAdapter listenerAdapter) {
+//        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+//        container.setConnectionFactory(connectionFactory);
+//        container.setQueueNames(queueName);
+//        container.setMessageListener(listenerAdapter);
+//        return container;
+//    }
+
+//    @Bean
+//    public SimpleMessageListenerContainer container(SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory) {
+//        SimpleRabbitListenerEndpoint endpoint = new SimpleRabbitListenerEndpoint();
+//        endpoint.setQueueNames("queue.1");
+//        endpoint.setMessageListener(message -> {
+//        });
+//        return rabbitListenerContainerFactory.createListenerContainer(endpoint);
+//    }
+
+//    @Bean
+//    MessageListenerAdapter listenerAdapter(Receiver receiver) {
+//        return new MessageListenerAdapter(receiver, "receiveMessage");
+//    }
 
     public static void main(String[] args) throws InterruptedException {
         new SpringApplicationBuilder(MessagingRabbitmqApplication.class).web(WebApplicationType.NONE).run(args).close();
@@ -74,4 +101,24 @@ public class MessagingRabbitmqApplication {
 //        SpringApplication.run(MessagingRabbitmqApplication.class, args).close();
     }
 
+    @Resource
+    private Receiver receiver;
+    @Override
+    public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
+        SimpleRabbitListenerEndpoint endpoint = new SimpleRabbitListenerEndpoint();
+        endpoint.setId("abc");
+        endpoint.setQueueNames(queueName);
+        endpoint.setMessageListener(new MessageListenerAdapter(receiver, "receiveMessage"));
+        registrar.registerEndpoint(endpoint);
+
+        SimpleRabbitListenerEndpoint endpoint2 = new SimpleRabbitListenerEndpoint();
+        endpoint2.setId("123");
+        endpoint2.setQueueNames("test");
+        endpoint2.setMessageListener(m -> {
+            byte[] bytes = m.getBody();
+            System.out.println(new String(bytes));
+        });
+
+        registrar.registerEndpoint(endpoint2);
+    }
 }

@@ -19,18 +19,34 @@ public class SpringMybatisMySQL {
     @Bean
     public CommandLineRunner demo(ArticleMapper mapper) {
         return args -> {
+            Article article1 = createArticle(1, "吴承恩", "西游记");
+            Article article2 = createArticle(2, "曹雪芹", "红楼梦");
+            Article article3 = createArticle(3, "施耐庵", "水浒传");
+            Article article4 = createArticle(4, "小罗", "三国演义");
+            //单条插入
+            mapper.insert(article1);
+            mapper.insert(article2);
+            mapper.insert(article3);
+            mapper.insert(article4);
+            // 全部查询
             mapper.getAll().forEach(article -> log.info(article.toString()));
 
-            Article article1 = new Article();
-            article1.setId(2L);
-            article1.setAuthor("test");
-            article1.setTitle("test");
-            Article article2 = new Article();
-            article2.setId(3L);
-            article2.setAuthor("foo");
-            article2.setTitle("foo");
-            log.info(String.valueOf(mapper.insert(article1)));
-            log.info(String.valueOf(mapper.insert(article2)));
+            // 插入或者更新
+            article4 = createArticle(4, "罗贯中", "三国演义");
+            mapper.insertOrUpdate(article4);
+            log.info(mapper.getById(article4.getId()).toString());
+
+            Article article5 = createArticle(5, "未知", "金瓶梅");
+            mapper.insertOrUpdate(article5);
+            log.info(mapper.getById(article5.getId()).toString());
         };
+    }
+
+    private Article createArticle(long id, String author, String title) {
+        Article article = new Article();
+        article.setId(id);
+        article.setAuthor(author);
+        article.setTitle(title);
+        return article;
     }
 }

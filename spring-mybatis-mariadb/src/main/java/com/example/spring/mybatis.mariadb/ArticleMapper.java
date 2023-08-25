@@ -8,5 +8,13 @@ import java.util.List;
 public interface ArticleMapper {
     List<Article> getAll();
 
+    Article getById(long id);
+
     int insert(Article article);
+
+    /**
+     * 新增或者更新一条数据
+     * 以表的主键作为 key
+     */
+    int insertOrUpdate(Article article);
 }

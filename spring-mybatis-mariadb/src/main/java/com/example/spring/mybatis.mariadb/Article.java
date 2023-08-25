@@ -1,4 +1,4 @@
-package org.example.spring.mybatis.mariadb;
+package com.example.spring.mybatis.mariadb;
 
 public class Article {
     private Long id;

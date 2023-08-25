@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.spring.mybatis.mariadb.ArticleMapper">
-    <select id="getAll" resultType="org.example.spring.mybatis.mariadb.Article">
+<mapper namespace="com.example.spring.mybatis.mariadb.ArticleMapper">
+    <select id="getAll" resultType="com.example.spring.mybatis.mariadb.Article">
         select * from ARTICLES
     </select>
-    <insert id="insert" parameterType="org.example.spring.mybatis.mariadb.Article">
+    <insert id="insert" parameterType="com.example.spring.mybatis.mariadb.Article">
         <!-- 一个 insert 标签只能向一个数据库插入数据 -->
         INSERT INTO ARTICLES (id, title, author)
         VALUES (#{id}, #{title}, #{author});

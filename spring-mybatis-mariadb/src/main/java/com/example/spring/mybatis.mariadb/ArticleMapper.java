@@ -1,4 +1,4 @@
-package org.example.spring.mybatis.mariadb;
+package com.example.spring.mybatis.mariadb;
 
 import org.apache.ibatis.annotations.Mapper;
 

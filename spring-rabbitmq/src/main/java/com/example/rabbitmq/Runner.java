@@ -1,4 +1,4 @@
-package org.example.spring.rabbitmq;
+package com.example.rabbitmq;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;

@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver # 可以自动根据 url 识别
+    username: root
+    password: test
+    url: jdbc:mariadb://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8&useSSL=false
